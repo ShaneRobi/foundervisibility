@@ -10,28 +10,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-
-interface Agent {
-  id: string;
-  name: string;
-  type: string;
-  status: 'active' | 'idle' | 'warning' | 'error';
-  provider: string;
-  connectedTools: string[];
-  lastActivity: string;
-  currentTask: string;
-  color: string;
-}
+import { Agent, AgentStatus } from '@/lib/types/agent';
 
 interface AgentCardProps {
   agent: Agent;
 }
 
-const statusConfig = {
+const statusConfig: Record<AgentStatus, { color: string; label: string; pulse: boolean }> = {
   active: { color: 'memphis-green', label: 'Active', pulse: true },
   idle: { color: 'memphis-purple', label: 'Idle', pulse: false },
   warning: { color: 'memphis-orange', label: 'Warning', pulse: true },
   error: { color: 'memphis-coral', label: 'Error', pulse: false },
+  connecting: { color: 'memphis-cyan', label: 'Connecting', pulse: true },
 };
 
 const colorClasses = {

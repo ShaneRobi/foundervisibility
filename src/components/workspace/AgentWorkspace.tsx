@@ -1,80 +1,13 @@
 import React from 'react';
-import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { AlertCircle } from 'lucide-react';
+import { AddAgentDialog } from './AddAgentDialog';
 import { AgentCard } from './AgentCard';
 import { EmptyState } from './EmptyState';
-
-const DEMO_AGENTS = [
-  {
-    id: '1',
-    name: 'Chief of Staff',
-    type: 'Coordinator',
-    status: 'active' as const,
-    provider: 'Chatchat',
-    connectedTools: ['Slack', 'Calendar', 'Email'],
-    lastActivity: '2 minutes ago',
-    currentTask: 'Coordinating content workflow',
-    color: 'coral',
-  },
-  {
-    id: '2',
-    name: 'Journal Agent',
-    type: 'Knowledge',
-    status: 'idle' as const,
-    provider: 'Chatchat',
-    connectedTools: ['Voice Notes', 'Documents'],
-    lastActivity: '1 hour ago',
-    currentTask: 'Processing voice notes',
-    color: 'purple',
-  },
-  {
-    id: '3',
-    name: 'Content Strategy',
-    type: 'Strategy',
-    status: 'active' as const,
-    provider: 'Chatchat',
-    connectedTools: ['LinkedIn', 'Twitter', 'Analytics'],
-    lastActivity: '5 minutes ago',
-    currentTask: 'Analyzing audience trends',
-    color: 'green',
-  },
-  {
-    id: '4',
-    name: 'Writer Agent',
-    type: 'Content',
-    status: 'active' as const,
-    provider: 'Chatchat',
-    connectedTools: ['LinkedIn', 'Twitter', 'Instagram'],
-    lastActivity: '10 minutes ago',
-    currentTask: 'Drafting LinkedIn post',
-    color: 'cyan',
-  },
-  {
-    id: '5',
-    name: 'Accountability',
-    type: 'Execution',
-    status: 'warning' as const,
-    provider: 'Chatchat',
-    connectedTools: ['Telegram', 'Calendar'],
-    lastActivity: '30 minutes ago',
-    currentTask: 'Monitoring overdue tasks',
-    color: 'orange',
-  },
-  {
-    id: '6',
-    name: 'Research Agent',
-    type: 'Intelligence',
-    status: 'idle' as const,
-    provider: 'Chatchat',
-    connectedTools: ['Web Search', 'News API'],
-    lastActivity: '2 hours ago',
-    currentTask: 'Awaiting research request',
-    color: 'yellow',
-  },
-];
+import { useAgents } from '@/lib/contexts/AgentContext';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export function AgentWorkspace() {
-  const [agents] = React.useState(DEMO_AGENTS);
+  const { agents, isConnected } = useAgents();
 
   return (
     <div className="space-y-6">
@@ -87,14 +20,22 @@ export function AgentWorkspace() {
             Your AI team working 24/7 to amplify your visibility
           </p>
         </div>
-        <Button 
-          size="lg" 
-          className="rounded-full bg-gradient-to-r from-memphis-coral to-memphis-orange text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all border-4 border-white"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Add Agent
-        </Button>
+        <AddAgentDialog />
       </div>
+
+      {!isConnected && (
+        <Alert className="border-4 border-memphis-orange rounded-2xl bg-memphis-orange/10">
+          <AlertCircle className="h-5 w-5 text-memphis-orange" />
+          <AlertTitle className="text-memphis-orange font-bold">Not Connected</AlertTitle>
+          <AlertDescription>
+            Add your Chatchat API key to <code className="bg-memphis-orange/20 px-2 py-1 rounded">.env</code> file:
+            <br />
+            <code className="bg-memphis-orange/20 px-2 py-1 rounded mt-2 inline-block">
+              VITE_CHATCHAT_API_KEY=your_api_key_here
+            </code>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {agents.length === 0 ? (
         <EmptyState />
